@@ -1,5 +1,49 @@
 
 
+# CTaaS: Clinical Trials as a Service
+
+A full-stack platform for modern clinical research, integrating a robust Phoenix/Elixir backend with a responsive Next.js frontend.
+
+- **Frontend:** Next.js (React, TypeScript) – user dashboards, trial management, protocol design
+- **Backend:** Phoenix (Elixir) – API, business logic, workflow orchestration, CORS-enabled for frontend integration
+
+## Features
+
+- Secure authentication and user management
+- Protocol, patient, and trial management
+- Real-time data flows and workflow automation
+- Modular, scalable, and enterprise-ready
+
+## Quickstart
+
+### Backend (Phoenix/Elixir)
+```sh
+cd apps/a2a_agent_web
+mix deps.get
+mix phx.server
+```
+
+### Frontend (Next.js)
+```sh
+cd ctaas_frontend
+pnpm install
+pnpm dev
+```
+
+Access the frontend at [http://localhost:3000](http://localhost:3000) and the backend API at [http://localhost:4000](http://localhost:4000).
+
+---
+
+## Architecture
+
+```
+[ Next.js (Frontend) ] <--CORS/API--> [ Phoenix (Backend) ] <---> [ Agents, Operators, DB ]
+```
+
+## More
+
+See below for advanced features, architecture, and contribution guidelines.
+
 # Hypergraph Agents Umbrella
 
 Multi-language, high-performance agentic AI framework for distributed workflows.
