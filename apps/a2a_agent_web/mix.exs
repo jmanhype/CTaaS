@@ -23,7 +23,7 @@ defmodule A2aAgentWeb.MixProject do
   def application do
     [
       mod: {A2aAgentWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools, :goldrush]
+      extra_applications: [:logger, :runtime_tools, :goldrush, :ecto_sql, :postgrex]
     ]
   end
 
@@ -62,7 +62,14 @@ defmodule A2aAgentWeb.MixProject do
       {:gnat, "~> 1.5"}, # NATS client for distributed event streaming
       {:yaml_elixir, "~> 2.4"},
       {:req, "~> 0.4"},
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+      # Ecto and Postgrex
+      {:ecto_sql, "~> 3.6"}, # Check for latest version
+      {:postgrex, ">= 0.0.0"}, # Check for latest version
+      # Authentication dependencies
+      {:argon2_elixir, "~> 3.0"}, # Check for latest version
+      {:comeonin, "~> 5.3"}, # Check for latest version, or if argon2_elixir brings a compatible one
+      {:joken, "~> 2.5"} # Check for latest version
     ]
   end
 
@@ -74,7 +81,11 @@ defmodule A2aAgentWeb.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get"]
+      setup: ["deps.get"],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end
 end
+

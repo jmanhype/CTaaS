@@ -8,6 +8,8 @@ defmodule A2aAgentWeb.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      # Start the Ecto repository
+      A2aAgentWeb.Repo,
       # Start PubSub first so it is available for subscriptions
       {Phoenix.PubSub, name: A2aAgentWeb.PubSub},
       # Start the AgentRegistry for dynamic agent discovery
@@ -49,3 +51,4 @@ defmodule A2aAgentWeb.Application do
     :ok
   end
 end
+

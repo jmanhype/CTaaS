@@ -1,0 +1,29 @@
+# Todo List
+
+- [x] Clone the repository
+- [x] Configure git with user credentials
+- [x] Analyze existing codebase for authentication requirements
+- [x] Design authentication endpoints
+- [ ] Implement authentication endpoints
+  - [x] Add authentication dependencies to mix.exs (argon2_elixir, comeonin, joken)
+  - [x] Run mix deps.get for authentication dependencies
+  - [x] Resolve Ecto dependency
+    - [x] Add Ecto and Postgrex to mix.exs and application config
+    - [x] Run mix deps.get for Ect    - [x] Configure Ecto Repo in project config (e.g., config/config.exs, dev.exs, test.exs)
+    - [x] Create Ecto Repo module (e.g., lib/a2a_agent_web/repo.ex)
+    - [x] Ensure Ecto Repo is started in application supervisor (application.ex)
+   - [x] Define User Ecto schema (lib/a2a_agent_web/accounts/user.ex) - (Revisit/confirm after Ecto setup))
+  - [x] Generate database migration for users table (mix ecto.gen.migration create_users)
+  - [x] Define users table schema in migration file
+  - [x] Run database migration (mix ecto.migrate)
+  - [x] Create Authentication Context/Module (e.g., Accounts) for user management
+  - [x] Create JWT Service/Module (e.g., TokenService) for token generation and verification
+  - [x] Create AuthController for register, login, logout actions
+  - [x] Create UserController for user profile actions
+  - [x] Update Router with new authentication routes
+  - [x] Create authentication Plug (e.g., EnsureAuthenticated) to protect routes
+  - [x] Add JWT and database configuration to config files (config/*.exs)
+- [ ] Test authentication endpoints
+- [ ] Commit and push stable changes periodically
+- [ ] Validate functionality and security
+- [ ] Report and send summary to user

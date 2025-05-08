@@ -54,3 +54,13 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# Configure your database
+config :a2a_agent_web, A2aAgentWeb.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "cta_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+

@@ -17,7 +17,12 @@
 import Config
 
 config :a2a_agent_web,
+  ecto_repos: [A2aAgentWeb.Repo],
   generators: [timestamp_type: :utc_datetime]
+
+# Configure Joken (JWT library)
+config :a2a_agent_web, :joken,
+  secret_key: System.get_env("JWT_SECRET_KEY") || "a_very_secure_fallback_secret_key_that_should_be_long_and_random_for_dev_only"
 
 # Configures the endpoint
 config :a2a_agent_web, A2aAgentWebWeb.Endpoint,
@@ -58,3 +63,4 @@ import_config "#{config_env()}.exs"
 #       format: "$date $time [$level] $metadata$message\n",
 #       metadata: [:user_id]
 #
+

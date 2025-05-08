@@ -4,6 +4,13 @@ defmodule A2aAgentWebWeb.Router do
   """
   use A2aAgentWebWeb, :router
 
+  # Aliases for controller parent modules, to be used within the A2aAgentWebWeb scope
+  alias A2aAgentWebWeb.Auth
+  alias A2aAgentWebWeb.User
+
+  # Import the authentication plug when it's created and ready to be used
+  # alias A2aAgentWebWeb.Plugs.EnsureAuthenticated
+
   pipeline :browser do
     plug :accepts, ["html"]
   end
@@ -12,24 +19,41 @@ defmodule A2aAgentWebWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # Pipeline for authenticated API routes
+  # pipeline :api_authenticated do
+  #   plug :accepts, ["json"]
+  #   plug EnsureAuthenticated # This will be uncommented and used later
+  # end
+
   scope "/", A2aAgentWebWeb do
     pipe_through :browser
-    
-    # Serve Next.js app for any route not matched by API or other specific Phoenix routes
-    # This must be the LAST route in this scope to act as a catch-all for the SPA.
-    get "/*path", PageController, :spa_index # Serves index.html for SPA
 
-    # Prometheus metrics endpoint at root - ensure it's before the SPA catch-all if needed at root
-    # If /metrics is intended to be served by Phoenix and not Next.js, keep it before /*path
-    # However, if Next.js handles /metrics, this specific route might not be needed here.
-    # For now, assuming /metrics is a backend endpoint and should be matched before SPA.
+    get "/*path", PageController, :spa_index # Serves index.html for SPA
     get "/metrics", MetricsController, :metrics
   end
 
   scope "/api", A2aAgentWebWeb do
     pipe_through :api
 
-    # CTaaS v1 API Endpoints
+    # Authentication Endpoints (under /api/v1/auth as per design)
+    # Controllers are referenced relative to the A2aAgentWebWeb scope
+    scope "/v1/auth" do
+      post "/register", Auth.AuthController, :register
+      post "/login", Auth.AuthController, :login
+      # The logout route will be protected by EnsureAuthenticated later
+      post "/logout", Auth.AuthController, :logout
+    end
+
+    # User Endpoints (under /api/v1/users as per design)
+    # Controllers are referenced relative to the A2aAgentWebWeb scope
+    scope "/v1/users" do
+      # This route will be protected by EnsureAuthenticated later
+      get "/me/profile", User.UserController, :profile
+    end
+
+    # CTaaS v1 API Endpoints (Original)
+    # These need to be checked if their controller definitions/aliases cause similar issues.
+    # Assuming they are defined like A2aAgentWebWeb.TrialController and aliased as TrialController.
     scope "/v1" do
       # Trials
       post "/trials", TrialController, :create
@@ -51,8 +75,8 @@ defmodule A2aAgentWebWeb.Router do
       put "/irb-submissions/:submission_id", IrbSubmissionController, :update
 
       # Sites
-      post "/sites", SiteController, :create_site_globally # Renamed to avoid conflict
-      get "/sites", SiteController, :index_sites_globally # Renamed to avoid conflict
+      post "/sites", SiteController, :create_site_globally
+      get "/sites", SiteController, :index_sites_globally
       post "/trials/:trial_id/sites", SiteController, :associate_site_to_trial
       get "/trials/:trial_id/sites", SiteController, :index_trial_sites
 
@@ -60,7 +84,7 @@ defmodule A2aAgentWebWeb.Router do
       post "/trials/:trial_id/patients/identify", PatientController, :identify # Async
       get "/patients/identification-status/:task_id", PatientController, :identification_status
       get "/trials/:trial_id/patients", PatientController, :index_trial_patients
-      post "/patients", PatientController, :create_patient_globally # Renamed
+      post "/patients", PatientController, :create_patient_globally
 
       # Data Monitoring
       get "/trials/:trial_id/monitoring/summary", MonitoringController, :summary
@@ -104,8 +128,6 @@ defmodule A2aAgentWebWeb.Router do
     get "/models", ModelsController, :index
 
     # Prometheus metrics endpoint
-    # This is duplicated from the root scope. If /api/metrics is distinct, keep it.
-    # Otherwise, rely on the root /metrics or ensure Next.js handles it if it's a frontend route.
     get "/metrics", MetricsController, :metrics
   end
 end
