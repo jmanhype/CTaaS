@@ -31,17 +31,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    // Check for existing token on initial load (e.g., from localStorage)
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setAuthToken(token);
-      fetchUserProfile();
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
   const fetchUserProfile = async () => {
     setIsLoading(true);
     try {
@@ -51,17 +40,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setError(null);
     } catch (err) {
       console.error("Failed to fetch user profile:", err);
-      // Token might be invalid, clear it
       localStorage.removeItem("authToken");
       setAuthToken(null);
       setIsAuthenticated(false);
       setUser(null);
-      // Optionally redirect to login if profile fetch fails with a token
-      // router.push("/login"); 
+      // router.push("/login"); // Optionally redirect
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setAuthToken(token);
+      fetchUserProfile().catch((err) => {
+        console.error("Error during initial profile fetch:", err);
+        localStorage.removeItem("authToken");
+        setAuthToken(null);
+        setIsAuthenticated(false);
+        setUser(null);
+        setIsLoading(false); // Ensure loading is false if fetchUserProfile promise chain fails
+      });
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
 
   const login = async (credentials: any) => {
     setIsLoading(true);
@@ -70,9 +74,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const data = await loginUser(credentials);
       if (data.access_token) {
         localStorage.setItem("authToken", data.access_token);
-        // setAuthToken is already called within loginUser in apiService.ts
+        // setAuthToken is called within loginUser in apiService.ts
         await fetchUserProfile(); // Fetch profile after successful login
-        router.push("/"); // Redirect to dashboard or desired page
+        if (user) { // Check if user profile was fetched successfully
+            router.push("/"); // Redirect to dashboard or desired page
+        } else {
+            // Handle case where profile fetch failed after login, maybe stay on login or show error
+            setError("Login successful, but failed to load user profile.");
+            setIsLoading(false); // Ensure loading is false
+        }
       } else {
         throw new Error("Login failed: No token received.");
       }
@@ -87,23 +97,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setError(errorMessage);
       setIsAuthenticated(false);
       setUser(null);
-      localStorage.removeItem("authToken"); // Clear any potentially bad token
+      localStorage.removeItem("authToken");
       setAuthToken(null);
       setIsLoading(false);
       throw err; // Re-throw to allow form to handle error display
     }
+    // Removed setIsLoading(false) from here as fetchUserProfile has its own finally block
   };
 
   const logout = async () => {
     setIsLoading(true);
     try {
-      await logoutUser(); // Call API logout if it exists
+      await logoutUser();
     } catch (err) {
       console.error("Logout API call failed (if any):", err);
-      // Continue with local logout regardless
     } finally {
       localStorage.removeItem("authToken");
-      // setAuthToken(null) is called within logoutUser in apiService.ts
+      setAuthToken(null);
       setIsAuthenticated(false);
       setUser(null);
       setError(null);

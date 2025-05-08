@@ -1,3 +1,5 @@
+"use client";
+
 import Layout from "@/components/Layout";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";

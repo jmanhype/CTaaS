@@ -1,3 +1,5 @@
+"use client";
+
 import Layout from "@/components/Layout";
 import Link from "next/link"; // Keep if you have links like "Create New User"
 import React, { useEffect, useState } from "react";

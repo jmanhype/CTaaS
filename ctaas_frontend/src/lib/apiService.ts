@@ -8,6 +8,7 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
     // Authorization headers will be added dynamically if needed
   },
+  timeout: 10000, // Add a 10-second timeout for all requests
 });
 
 // Function to add authorization token to requests

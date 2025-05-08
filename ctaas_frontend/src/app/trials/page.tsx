@@ -1,3 +1,5 @@
+"use client";
+
 import Layout from "@/components/Layout";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";

@@ -1,3 +1,5 @@
+"use client";
+
 import Layout from "@/components/Layout";
 import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
