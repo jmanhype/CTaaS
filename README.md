@@ -1,520 +1,151 @@
-
-
 # CTaaS: Clinical Trials as a Service
-
-A full-stack platform for modern clinical research, integrating a robust Phoenix/Elixir backend with a responsive Next.js frontend.
-
-- **Frontend:** Next.js (React, TypeScript) – user dashboards, trial management, protocol design
-- **Backend:** Phoenix (Elixir) – API, business logic, workflow orchestration, CORS-enabled for frontend integration
-
-## Features
-
-- Secure authentication and user management
-- Protocol, patient, and trial management
-- Real-time data flows and workflow automation
-- Modular, scalable, and enterprise-ready
-
-## Quickstart
-
-### Backend (Phoenix/Elixir)
-```sh
-cd apps/a2a_agent_web
-mix deps.get
-mix phx.server
-```
-
-### Frontend (Next.js)
-```sh
-cd ctaas_frontend
-pnpm install
-pnpm dev
-```
-
-Access the frontend at [http://localhost:3000](http://localhost:3000) and the backend API at [http://localhost:4000](http://localhost:4000).
-
----
-
-## Architecture
-
-```
-[ Next.js (Frontend) ] <--CORS/API--> [ Phoenix (Backend) ] <---> [ Agents, Operators, DB ]
-```
-
-## More
-
-See below for advanced features, architecture, and contribution guidelines.
-
-# Hypergraph Agents Umbrella
-
-Multi-language, high-performance agentic AI framework for distributed workflows.
-
-[![CI](https://img.shields.io/github/actions/workflow/status/jmanhype/hypergraph_agents_umbrella/ci.yml?style=flat-square)](https://github.com/jmanhype/hypergraph_agents_umbrella/actions)
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square)](#)
-[![Docs](https://img.shields.io/badge/docs-hexdocs.io-blue?style=flat-square)](#)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
-
----
 
 ## Overview
 
-**Hypergraph Agents** is a modular, distributed AI workflow framework supporting Elixir, Python, and more. It enables teams to build, orchestrate, and observe complex agentic workflows—ideal for enterprises seeking scalable, auditable, and extensible AI solutions.
+CTaaS (Clinical Trials as a Service) is a comprehensive full-stack platform designed to streamline and manage various aspects of clinical research. It features a robust backend built with Phoenix (Elixir) and a modern, responsive frontend developed using Next.js (React, TypeScript).
 
-<p align="center">
-  <img src="https://github.com/jmanhype/hypergraph_agents_umbrella/raw/main/2025-04-20%2013.29.32.jpg" alt="Keylon Partiki Pattern" width="350" />
-</p>
-<p align="center"><em>Keylon Partiki Pattern – Symbolizing distributed intelligence and interconnected workflows</em></p>
+The platform provides a suite of tools for managing clinical trials, including modules for trial setup, protocol management, IRB submissions, site coordination, patient recruitment and tracking, data monitoring, and regulatory reporting.
 
----
+## Core Features
 
-# 📚 Table of Contents
-- [Project Overview](#project-overview)
-  - [Architecture](#architecture)
-  - [A2A Protocol: Agent Communication](#a2a-protocol-agent-communication)
-  - [Workflow Engine (XCS)](#workflow-engine-xcs)
-  - [Operators: Plug & Play AI](#operators-plug--play-ai)
-  - [Specification Protocol: Validation](#specification-protocol-validation)
-  - [Model System: LLMs & More](#model-system-llms--more)
-  - [Configuration System](#configuration-system)
-  - [Directory Structure](#directory-structure)
-  - [Multi-Language Agents](#multi-language-agents)
-  - [Observability: Metrics & Dashboards](#observability-metrics--dashboards)
-- [Viral Quickstart & Usage Story](#-imagine-this)
-- [Why Hypergraph Agents?](#-why-hypergraph-agents)
-- [Enterprise Business Use Case](#-enterprise-business-use-case)
-- [How It Works: Subsystem Interoperability](#-how-it-works-subsystem-interoperability)
-- [Pro Tips](#-pro-tips)
-- [Summary Table: What You Can Do](#-summary-table-what-you-can-do)
-- [Remixable Workflows](#-remixable-workflows)
-- [Add Your Own AI](#-operators-add-your-own-ai)
-- [Dev Experience](#-dev-experience)
-- [End-to-End Example](#-example-run-a-workflow-python)
-- [Contribute & Remix](#-contribute--remix)
-- [Go Further](#-go-further)
+*   **Trial Management:** Create, update, and manage clinical trials through a dedicated API and user interface.
+*   **Protocol Management:** Design, draft, and track study protocols.
+*   **IRB Submissions:** Handle submissions and track statuses for Institutional Review Boards.
+*   **Site Management:** Coordinate and manage participating clinical trial sites.
+*   **Patient Recruitment & Tracking:** Tools for identifying and managing patient cohorts.
+*   **Data Monitoring:** Summarize and track monitoring events related to trial progress.
+*   **Regulatory Reporting:** Generate and manage regulatory reports.
+*   **API-Driven:** A comprehensive set of API endpoints for programmatic interaction and integration.
 
----
+## Technologies Used
 
-# 🚩 Project Overview
+*   **Backend:** Elixir, Phoenix Framework
+*   **Frontend:** Next.js, React, TypeScript, Tailwind CSS, Radix UI
+*   **Messaging/Event Streaming:** NATS Server
+*   **Database:** (Assumed, typically PostgreSQL with Phoenix projects, but not explicitly configured in this setup walkthrough)
+*   **Package Management:** Mix (Elixir), pnpm (Node.js)
 
-## Architecture
+## Project Structure
 
-```mermaid
-graph TD
-    User --> API
-    API --> XCS
-    XCS --> Operators
-    Operators --> LLM
-    XCS --> EventBus
-    EventBus --> PythonAgent
-    PythonAgent --> API
+*   `/apps/a2a_agent_web/`: Contains the Phoenix backend application.
+    *   `lib/a2a_agent_web_web/router.ex`: Defines API and web routes.
+    *   `mix.exs`: Backend project dependencies and configuration.
+*   `/ctaas_frontend/`: Contains the Next.js frontend application.
+    *   `src/app/`: Main application code, including pages and components.
+    *   `package.json`: Frontend project dependencies and scripts.
+*   `/README.md`: This file.
+
+## Setup and Running the Application
+
+These instructions reflect the steps taken to get the application running in a specific sandbox environment. You may need to adapt them based on your local setup.
+
+### Prerequisites
+
+1.  **Git:** For cloning the repository.
+2.  **Elixir & Erlang:** Specific versions are required.
+    *   Erlang/OTP 26.2.5
+    *   Elixir 1.18.0
+    *   It is recommended to use a version manager like `asdf` to install these:
+        ```bash
+        asdf plugin-add erlang
+        asdf plugin-add elixir
+        asdf install erlang 26.2.5
+        asdf install elixir 1.18.0
+        asdf global erlang 26.2.5
+        asdf global elixir 1.18.0
+        ```
+3.  **Node.js & pnpm:** For the frontend.
+    *   Node.js (e.g., v20.x or later)
+    *   pnpm (e.g., v10.x or later)
+    *   Install pnpm globally if you haven't: `npm install -g pnpm`
+4.  **NATS Server:** Required for backend event communication.
+    *   Download the NATS server binary for Linux (e.g., `nats-server-v2.10.17-linux-amd64.zip`) from the [NATS releases page](https://github.com/nats-io/nats-server/releases).
+    *   Unzip and place the `nats-server` executable in your PATH or a known location.
+5.  **Build Essentials:** (If building Erlang/Elixir from source with `asdf`)
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y build-essential autoconf libssl-dev libncurses-dev
+    ```
+6.  **(Optional) OpenAI API Key:** Some underlying agent functionalities might require an OpenAI API Key. Set it as an environment variable if needed:
+    ```bash
+    export OPENAI_API_KEY="your_openai_api_key_here"
+    ```
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/jmanhype/CTaaS.git
+cd CTaaS
 ```
 
-- **User**: Developer or API client
-- **API**: Phoenix API (Elixir)
-- **XCS**: Execution Engine
-- **Operators**: Modular computation units
-- **LLM**: Model System (LLMs, etc.)
-- **EventBus**: NATS/PubSub
-- **PythonAgent**: Python agent process
+### 2. Start NATS Server
 
+Open a new terminal window and start the NATS server:
 
-> **[Add GIF/Screenshot: Running a workflow, seeing results and metrics live]**
-
----
-
-## A2A Protocol: Agent Communication
-
-Agents send, receive, and negotiate tasks via a simple, powerful protocol:
-
-```json
-{
-  "type": "task_request",
-  "sender": "agent1",
-  "recipient": "agent2",
-  "payload": { "graph": { "nodes": [], "edges": [] } }
-}
+```bash
+nats-server
 ```
 
-- **Endpoints:**
-  - `POST /api/a2a` (Elixir)
-  - `/api/a2a` (Python FastAPI)
+Leave this terminal running.
 
-> **[Add Mermaid Sequence Diagram: A2A Message Flow]**
+### 3. Setup and Run the Backend (Phoenix/Elixir)
 
----
+In a new terminal, navigate to the backend directory:
 
-## Workflow Engine (XCS)
+```bash
+cd apps/a2a_agent_web/
 
-- **Graph-based execution:** Parallel & sequential
-- **Topological sorting:** Handles dependencies
-- **Flexible:** YAML, Elixir, or Python workflows
+# Install dependencies
+mix deps.get
 
-```mermaid
-graph LR
-    A[Start] --> B[Summarize]
-    B --> C[Analyze]
-    C --> D[End]
+# (Optional) If you need to set the OpenAI API key for this session:
+# export OPENAI_API_KEY="your_openai_api_key_here"
+
+# Start the Phoenix server
+mix phx.server
 ```
 
-- Run: `mix workflow.run workflows/summarize_and_analyze.yaml`
+The backend API should now be running, typically on `http://localhost:4000`.
 
----
+### 4. Setup and Run the Frontend (Next.js)
 
-## Operators: Plug & Play AI
+In another new terminal, navigate to the frontend directory:
 
-- **Built-in:** MapOperator, SequenceOperator, LLMOperator, ParallelOperator
-- **Custom:**
+```bash
+cd ctaas_frontend/
 
-```elixir
-defmodule MyOperator do
-  @moduledoc """Custom operator example."""
-  def run(input, _ctx), do: String.upcase(input)
-end
+# Install dependencies
+pnpm install
+
+# Start the Next.js development server
+pnpm dev
 ```
 
-- Generate: `mix a2a.gen.operator MyOperator`
-- Test: `mix test`
+The frontend application should now be running, typically on `http://localhost:3000` (or the next available port like 3001, 3002, etc., if 3000 is in use).
 
----
+### Notes on Frontend Operation
 
-## Specification Protocol: Validation
+*   The frontend attempts to connect to backend authentication endpoints (`/auth/login`, `/users/me/profile`) that are not currently defined in the backend router. The application has been modified to handle these missing endpoints more gracefully (e.g., by timing out API calls and falling back to an unauthenticated state) to prevent it from hanging indefinitely. This allows the login page to load.
+*   Full authentication functionality would require implementing these corresponding endpoints in the Phoenix backend.
 
-- **Input/output validation** for operators & workflows
-- Example:
+## API Endpoints
 
-```elixir
-@spec run(map(), map()) :: {:ok, map()} | {:error, String.t()}
-def run(input, _ctx) do
-  with :ok <- validate(input) do
-    ...
-  end
-end
-```
+The backend exposes a variety of API endpoints under `/api/v1/` for managing:
+*   Trials (`/trials`)
+*   Protocols (`/trials/:trial_id/protocols`)
+*   IRB Submissions (`/trials/:trial_id/irb-submissions`)
+*   Sites (`/sites`, `/trials/:trial_id/sites`)
+*   Patients (`/trials/:trial_id/patients`)
+*   Data Monitoring (`/trials/:trial_id/monitoring`)
+*   Regulatory Reports (`/trials/:trial_id/reports`)
 
----
+Refer to `apps/a2a_agent_web/lib/a2a_agent_web_web/router.ex` for a detailed list of routes and controllers.
 
-## Model System: LLMs & More
+## Contributing
 
-- **LLM integration** via `instructor_ex` (Elixir)
-- **Easy to swap models/configs**
-- Example:
+(Details to be added if contributions are open)
 
-```elixir
-response = Model.call("Summarize this text", model: :gpt_4)
-```
+## License
 
----
+(License information to be added - currently the repository has a MIT license associated with the Hypergraph Agents content)
 
-## Configuration System
-
-- **Global & context-specific config**
-- Uses `.env` or `config/*.exs`
-- Example:
-
-```elixir
-config :a2a_agent_web, api_key: System.get_env("OPENAI_API_KEY")
-```
-
----
-
-## Directory Structure
-
-```text
-hypergraph_agents_umbrella/
-  agents/
-    python_agents/
-      minimal_a2a_agent/
-  apps/
-    a2a_agent_web/
-    engine/
-    operator/
-  config/
-  ...
-```
-
-> **[Add Visual: Directory Tree or Screenshot]**
-
----
-
-## Multi-Language Agents
-
-- **Elixir & Python** communicate via A2A protocol
-- Example: Python agent receives, processes, and replies to Elixir agent
-
-> **[Add Mermaid Sequence Diagram: Elixir ↔ Python message]**
-
----
-
-## Observability: Metrics & Dashboards
-
-- **Prometheus metrics** at `/metrics`
-- **Grafana dashboards** for real-time monitoring
-
-> **[Add Screenshot/GIF: Metrics dashboard in action]**
-
----
-
-## 🧑‍💻 Imagine This
-
-You want to analyze, summarize, and remix data using both LLMs and custom logic—across Elixir and Python. Hypergraph Agents lets you:
-
-- Define workflows visually (YAML/Elixir)
-- Plug in your own operators or use built-ins
-- Run from CLI, API, or Python/Elixir
-- See results, remix, and scale—fast
-
----
-
-### 1. **Define a Workflow (YAML or Elixir)**
-
-```yaml
-# workflows/summarize_and_analyze.yaml
-nodes:
-  - id: summarize
-    operator: LLMOperator
-    prompt: "Summarize this: {{input.text}}"
-  - id: analyze
-    operator: MapOperator
-    function: "analyze_sentiment"
-edges:
-  - from: summarize
-    to: analyze
-```
-
----
-
-### 2. **Add or Use an Operator**
-
-Operators are plug-and-play. Use built-ins or add your own:
-
-```elixir
-defmodule MyOperator do
-  @moduledoc """Custom operator for viral workflows."""
-  def run(input, _ctx), do: String.upcase(input)
-end
-```
-
----
-
-### 3. **Run the Workflow**
-
-**CLI:**
-```sh
-mix workflow.run workflows/summarize_and_analyze.yaml
-```
-
-**API (Python):**
-```python
-import httpx
-msg = {
-    "type": "task_request",
-    "sender": "pyagent1",
-    "recipient": "agent1",
-    "payload": {"task_id": "t1", "stream": True}
-}
-r = httpx.post("http://localhost:4000/api/a2a", json=msg)
-print(r.json())
-```
-
----
-
-### 4. **See the Results**
-
-```
-{
-  "result": {
-    "summary": "This is the summary...",
-    "analysis": "Positive"
-  }
-}
-```
-
----
-
-### 5. **Remix: Add More Agents, Operators, or Workflows**
-
-- Generate a new operator: `mix a2a.gen.operator ViralOperator`
-- Add a Python agent: see [`minimal_a2a_agent`](agents/python_agents/minimal_a2a_agent/README.md)
-- Monitor metrics: `http://localhost:4000/metrics`
-
----
-
-## 🏗️ How It Works
-
-- **A2A Protocol:** Agents talk, negotiate, and collaborate.
-- **Operators:** Modular, extensible, and cross-language.
-- **Workflows:** YAML, Elixir, or Python—your choice.
-- **Observability:** Metrics, logs, dashboards—built in.
-
----
-
-## 📚 Go Further
-
-- [Deep Dive: Operators & Workflows](apps/operator/README.md)
-- [API Reference & Examples](apps/a2a_agent_web/README.md)
-- [Contributing](CONTRIBUTING.md)
-
----
-
-## 🚀 Why Hypergraph Agents?
-
-- **Plug & Play AI:** Instantly connect Elixir & Python agents.
-- **Workflow DSL:** Write, run, remix—YAML or Elixir, your call.
-- **A2A Protocol:** Agents talk, negotiate, and collaborate.
-- **Event Streaming:** Real-time, distributed, and fast (NATS, PubSub).
-- **Observability:** Metrics, logs, dashboards—built in.
-- **Zero-BS Onboarding:** Clone, run, remix. Done.
-
----
-
-# 🏢 Enterprise Business Use Case
-
-> **Scenario:**  
-> An enterprise needs to automate compliance checks across thousands of contracts, extracting key clauses, summarizing obligations, and flagging risks using both LLMs and custom logic.
-
-<p align="center">
-  <img src="https://github.com/jmanhype/hypergraph_agents_umbrella/raw/main/2025-04-20%2013.29.32.jpg" alt="Keylon Partiki Pattern" width="350" />
-</p>
-<p align="center"><em>Keylon Partiki Pattern – Symbolizing distributed intelligence and interconnected workflows</em></p>
-
-### How Hypergraph Agents Solves This
-
-- Elixir API: http://localhost:4000
-- Python Agent: http://localhost:5001
-- Metrics: http://localhost:4000/metrics
-
----
-
-## 🧩 Remixable Workflows
-
-- **YAML or Elixir:**
-  - `workflows/summarize_and_analyze.yaml`
-  - `workflows/summarize_and_analyze.exs`
-- **Generate your own:**
-  - `mix a2a.gen.workflow my_workflow`
-- **Run it:**
-  - `mix workflow.run workflows/summarize_and_analyze.yaml`
-
-### Example: Running a Workflow
-
-```sh
-mix workflow.run apps/a2a_agent_web/workflows/summarize_and_analyze.yaml
-```
-
-Sample output:
-```text
-DEBUG: YAML path: apps/a2a_agent_web/workflows/summarize_and_analyze.yaml
-DEBUG: File.exists?: true
-YAML parsed data: %{
-  "edges" => ["summarize->analyze"],
-  "nodes" => [
-    %{
-      "depends_on" => [],
-      "id" => "summarize",
-      "op" => "LLMOperator",
-      "params" => %{
-        "context" => %{"topic" => "Elixir DSLs"},
-        "prompt_template" => "Summarize: ~s"
-      }
-    },
-    %{
-      "depends_on" => ["summarize"],
-      "id" => "analyze",
-      "op" => "MapOperator",
-      "params" => %{"function" => nil}
-    }
-  ]
-}
-[info] LLMOperator.run/2 prompt: "Summarize: Elixir DSLs"
-[info] LLMOperator.run/2 sending request to OpenAI: ...
-[info] LLMOperator.run/2 OpenAI response: ...
-Workflow result:
-{
-  "analyze": {
-    "function": null,
-    "result": "Elixir DSLs (Domain Specific Languages) are specialized mini-languages written in Elixir, designed to simplify complex code and make it more expressive and easy to understand within a particular domain. ..."
-  },
-  "summarize": {
-    "result": "Elixir DSLs (Domain Specific Languages) are specialized mini-languages written in Elixir, designed to simplify complex code and make it more expressive and easy to understand within a particular domain. ..."
-  }
-}
-```
-
----
-
-## ⚙️ Operators: Add Your Own AI
-
-- **Generate a new operator:**
-  ```sh
-  mix a2a.gen.operator ViralOperator
-  ```
-- **Drop in your logic:**
-  - `lib/a2a_agent_web_web/operators/viral_operator.ex`
-- **Test it:**
-  - `mix test`
-
----
-
-## 🌐 Agents Talk (A2A Protocol)
-
-```json
-{
-  "type": "task_request",
-  "sender": "agent1",
-  "recipient": "agent2",
-  "payload": { "graph": { "nodes": [], "edges": [] } }
-}
-```
-- `POST /api/a2a` — Send messages, trigger workflows, negotiate.
-- Works across Elixir, Python, and beyond.
-
----
-
-## 🛠️ Dev Experience
-
-- **Makefile Shortcuts:** `make up`, `make test`, `make lint`
-- **Live reload:** Phoenix & FastAPI
-- **OpenAPI docs:** [openapi.yaml](apps/a2a_agent_web/openapi.yaml)
-- **All code is type-annotated & documented**
-
----
-
-## 🧪 Example: Run a Workflow (Python)
-
-```python
-import httpx
-msg = {
-    "type": "task_request",
-    "sender": "pyagent1",
-    "recipient": "agent1",
-    "payload": {"task_id": "t1", "stream": True}
-}
-r = httpx.post("http://localhost:4000/api/a2a", json=msg)
-print(r.json())
-```
-
----
-
-## 🤝 Contribute & Remix
-
-- Fork, branch, PR—let’s build viral AI together
-- All tests must pass (`make test`, `mix test`, `pytest`)
-- Follow [CONTRIBUTING.md](CONTRIBUTING.md) and `.ai/rules/python-dev.md`
-
----
-
-## 📚 Learn More
-
-- [A2A Protocol](apps/a2a_agent_web/README.md#a2a-protocol-message-schema)
-- [Operator Library](apps/operator/README.md)
-- [Minimal Python Agent](agents/python_agents/minimal_a2a_agent/README.md)
-- [Engine & Workflow DSL](apps/engine/README.md)
-
----
-
-## 🦾 Viral AI Starts Here
-
-Unleash distributed, agentic intelligence. Remix, extend, and connect your own operators, workflows, and agents—across any language.
-
----
-
-MIT License | Built with Elixir, Python, and love.
